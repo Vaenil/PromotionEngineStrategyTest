@@ -23,7 +23,23 @@ namespace PromotionEngineStrategyTest
             //Display the list from customer
             customerList.DisplayOrderCount();
         }
-                
+
+        [TestMethod]
+        public void TestInput()
+        {
+            //Fill the SKU ids and their unit prices
+            CustomerOrder customerList = new CustomerOrder();
+
+            //Get the order from user
+            customerList.GetOrderFromUser(' ', 3);
+            customerList.GetOrderFromUser('B', 2);
+            customerList.GetOrderFromUser('C', 1);
+            customerList.GetOrderFromUser('D', 1);
+
+            //Display the list from customer
+            customerList.DisplayOrderCount();
+        }
+
 
         [TestMethod]
         public void ScenarioA()
@@ -49,14 +65,21 @@ namespace PromotionEngineStrategyTest
             //=======================================ACTIVE PROMOTIONS===================================//
             //Apply Fixed price combination for A and B
             Console.WriteLine("Activating fixed price Promotion");
-            context.SetPromotionStrategy(new FixedPromotionTypeAB());
+            FixedPromotionTypeAB fixObj = new FixedPromotionTypeAB();
+            context.SetPromotionStrategy(fixObj);
             customerList.listItems = context.ApplyPromotion(customerList.listItems, customerList.priceInOrder);
+            double price = fixObj.GetNetPrice();
+            //Assert
+            Assert.IsTrue(price == 80);
 
             //Apply Combo price combination for C and D
             Console.WriteLine("Activating combo price Promotion");
-            context.SetPromotionStrategy(new ComboPromotionTypeCD());
+            ComboPromotionTypeCD comboObj = new ComboPromotionTypeCD();
+            context.SetPromotionStrategy(comboObj);
             customerList.listItems = context.ApplyPromotion(customerList.listItems, customerList.priceInOrder);
-
+            double comboprice = comboObj.GetNetPrice();
+            //Assert
+            Assert.IsTrue(comboprice == 100);
         }
 
         [TestMethod]
@@ -83,14 +106,21 @@ namespace PromotionEngineStrategyTest
             //=======================================ACTIVE PROMOTIONS===================================//
             //Apply Fixed price combination for A and B
             Console.WriteLine("Activating fixed price Promotion");
-            context.SetPromotionStrategy(new FixedPromotionTypeAB());
+            FixedPromotionTypeAB fixObj = new FixedPromotionTypeAB();
+            context.SetPromotionStrategy(fixObj);
             customerList.listItems = context.ApplyPromotion(customerList.listItems, customerList.priceInOrder);
+            double price = fixObj.GetNetPrice();
+            //Assert
+            Assert.IsTrue(price == 450);
 
             //Apply Combo price combination for C and D
             Console.WriteLine("Activating combo price Promotion");
-            context.SetPromotionStrategy(new ComboPromotionTypeCD());
+            ComboPromotionTypeCD comboObj = new ComboPromotionTypeCD();
+            context.SetPromotionStrategy(comboObj);
             customerList.listItems = context.ApplyPromotion(customerList.listItems, customerList.priceInOrder);
-
+            double comboprice = comboObj.GetNetPrice();
+            //Assert
+            Assert.IsTrue(comboprice == 470);
         }
 
         [TestMethod]
@@ -117,14 +147,21 @@ namespace PromotionEngineStrategyTest
             //=======================================ACTIVE PROMOTIONS===================================//
             //Apply Fixed price combination for A and B
             Console.WriteLine("Activating fixed price Promotion");
-            context.SetPromotionStrategy(new FixedPromotionTypeAB());
+            FixedPromotionTypeAB fixObj = new FixedPromotionTypeAB();
+            context.SetPromotionStrategy(fixObj);
             customerList.listItems = context.ApplyPromotion(customerList.listItems, customerList.priceInOrder);
+            double price = fixObj.GetNetPrice();
+            //Assert
+            Assert.IsTrue(price == 250);
 
             //Apply Combo price combination for C and D
             Console.WriteLine("Activating combo price Promotion");
-            context.SetPromotionStrategy(new ComboPromotionTypeCD());
+            ComboPromotionTypeCD comboObj = new ComboPromotionTypeCD();
+            context.SetPromotionStrategy(comboObj);
             customerList.listItems = context.ApplyPromotion(customerList.listItems, customerList.priceInOrder);
-
+            double comboprice = comboObj.GetNetPrice();
+            //Assert
+            Assert.IsTrue(comboprice == 280);
         }
 
         [TestMethod]
@@ -151,13 +188,86 @@ namespace PromotionEngineStrategyTest
             //=======================================ACTIVE PROMOTIONS===================================//
             //Apply Fixed price combination for A and B
             Console.WriteLine("Activating fixed price Promotion");
-            context.SetPromotionStrategy(new FixedPromotionTypeAB());
+            FixedPromotionTypeAB fixObj = new FixedPromotionTypeAB();
+            context.SetPromotionStrategy(fixObj);
             customerList.listItems = context.ApplyPromotion(customerList.listItems, customerList.priceInOrder);
+            double price = fixObj.GetNetPrice();
+            //Assert
+            Assert.IsTrue( price == 1750);
 
             //Apply Combo price combination for C and D
             Console.WriteLine("Activating combo price Promotion");
-            context.SetPromotionStrategy(new ComboPromotionTypeCD());
+            ComboPromotionTypeCD comboObj = new ComboPromotionTypeCD();
+            context.SetPromotionStrategy(comboObj);
             customerList.listItems = context.ApplyPromotion(customerList.listItems, customerList.priceInOrder);
+            double comboprice = comboObj.GetNetPrice();
+            //Assert
+            Assert.IsTrue(comboprice == 1780);
+        }
+
+        [TestMethod]
+        public void ScenarioPercentage()
+        {
+            //Fill the SKU ids and their unit prices
+            CustomerOrder customerList = new CustomerOrder();
+
+            //Get the order from user
+            customerList.GetOrderFromUser('A', 1);
+            customerList.GetOrderFromUser('B', 1);
+            customerList.GetOrderFromUser('C', 1);
+            customerList.GetOrderFromUser('D', 0);
+
+            //Display the list from customer
+            customerList.DisplayOrderCount();
+
+            Dictionary<char, int> OriginalCustomerOrder = new Dictionary<char, int>();
+            OriginalCustomerOrder = customerList.listItems;
+
+            //create a context
+            Context context = new Context();
+
+            //=======================================ACTIVE PROMOTIONS===================================//
+            //Apply percentage promotion
+            PercentagePromotionType obj = new PercentagePromotionType();
+            Console.WriteLine("Activating fixed price Promotion");
+            context.SetPromotionStrategy(obj);
+            customerList.listItems = context.ApplyPromotion(customerList.listItems, customerList.priceInOrder);
+                        
+
+            //Assert
+            Assert.IsTrue(obj.price==50);
+        }
+
+        [TestMethod]
+        public void ScenarioNoPromotion()
+        {
+            //Fill the SKU ids and their unit prices
+            CustomerOrder customerList = new CustomerOrder();
+
+            //Get the order from user
+            customerList.GetOrderFromUser('A', 1);
+            customerList.GetOrderFromUser('B', 1);
+            customerList.GetOrderFromUser('C', 1);
+            customerList.GetOrderFromUser('D', 1);
+
+            //Display the list from customer
+            customerList.DisplayOrderCount();
+
+            Dictionary<char, int> OriginalCustomerOrder = new Dictionary<char, int>();
+            OriginalCustomerOrder = customerList.listItems;
+
+            //create a context
+            Context context = new Context();
+
+            //=======================================ACTIVE PROMOTIONS===================================//
+            //Apply Fixed price combination for A and B
+            Console.WriteLine("Activating fixed price Promotion");
+            NoPromotionType Obj = new NoPromotionType();
+            context.SetPromotionStrategy(Obj);
+            customerList.listItems = context.ApplyPromotion(customerList.listItems, customerList.priceInOrder);
+          
+            //Assert
+            Assert.IsTrue(Obj.price == 115);
 
         }
 
